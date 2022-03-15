@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social/api/Login.dart';
-import 'package:social/db/DBProvider.dart';
+import 'package:social/db/SettingDBProvider.dart';
 import 'package:social/page/HomePage.dart';
-import 'package:social/screen/HomeScreen.dart';
 
 class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  final _dbProvider = DBProvider();
+  final _dbProvider = SettingDBProvider();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -57,7 +56,7 @@ class LoginPage extends StatelessWidget {
                                 content: Text("Wrong username or password")));
                       } else if (value.code == 200) {
                         _dbProvider.updateSetting(
-                            DBProvider.TOKEN_SETTING, value.accessToken);
+                            SettingDBProvider.TOKEN_SETTING, value.accessToken);
                         if (value.tokenExpire != null) {
                           int now =
                               (DateTime.now().millisecondsSinceEpoch / 1000)

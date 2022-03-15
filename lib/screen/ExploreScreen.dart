@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 class ExploreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Explore"),
+      ),
+      body: const Center(
         child: Text("Explore"),
       ),
     );

@@ -10,10 +10,11 @@ class HomePage extends StatelessWidget {
   final homePageController = Get.put(HomePageController());
 
   HomePage() {
-    Widget _homeNavigator =
+    var _homeNavigator =
         HomeScreen(setPage: homePageController.updatePageIndex);
-    Widget _exploreNavigator = ExploreScreen();
-    Widget _myProfileScreen = MyProfileScreen();
+    var _exploreNavigator = ExploreScreen();
+    var _myProfileScreen =
+        MyProfileScreen(unfollow: _homeNavigator.unfollowupdate);
     navigators = [_homeNavigator, _exploreNavigator, _myProfileScreen];
   }
 

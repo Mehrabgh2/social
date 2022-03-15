@@ -2,17 +2,22 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social/controller/UserProfileController.dart';
+import 'package:social/db/FollowedDBProvider.dart';
 import 'package:social/screen/FollowerScreen.dart';
-import 'package:social/screen/FollowingScreen.dart';
+import 'package:social/screen/MyFollowingScreen.dart';
 
 class MyProfileScreen extends StatelessWidget {
   UserProfileController profileController = Get.find<UserProfileController>();
+  FollowingCounter counter = Get.put(FollowingCounter());
+  Function unfollow;
+
+  MyProfileScreen({required this.unfollow});
 
   @override
   Widget build(BuildContext context) {
+    counter.updateCount(FollowedDBProvider.instance.getFollowings().length);
     profileController.getMyUser();
     int followerCount = Random().nextInt(200);
-    int followingCount = Random().nextInt(200);
     final size = MediaQuery.of(context).size;
     return Obx(() {
       return Scaffold(
@@ -134,7 +139,9 @@ class MyProfileScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(25),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(FollowingScreen(count: followingCount));
+                        Get.to(MyFollowingScreen(
+                          unfollow: unfollow,
+                        ));
                       },
                       child: Column(
                         children: [
@@ -145,7 +152,7 @@ class MyProfileScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            followingCount.toString(),
+                            counter.count.toString(),
                             style: TextStyle(
                                 fontSize: size.width / 25,
                                 fontWeight: FontWeight.bold),
@@ -161,5 +168,13 @@ class MyProfileScreen extends StatelessWidget {
         ),
       );
     });
+  }
+}
+
+class FollowingCounter extends GetxController {
+  var count = 0.obs;
+
+  updateCount(int value) {
+    count(value);
   }
 }

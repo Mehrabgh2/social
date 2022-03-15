@@ -1,8 +1,8 @@
 import 'package:social/db/SettingsModel.dart';
 import 'package:social/objectbox.g.dart';
 
-class DBProvider {
-  static final DBProvider _instance = DBProvider._internal();
+class SettingDBProvider {
+  static final SettingDBProvider _instance = SettingDBProvider._internal();
   static const THEME_SETTING = 0;
   static const LOCALE_SETTING = 1;
   static const TOKEN_SETTING = 2;
@@ -10,11 +10,11 @@ class DBProvider {
   static late Store _store;
   static late Box _box;
 
-  factory DBProvider() {
+  factory SettingDBProvider() {
     return _instance;
   }
 
-  DBProvider._internal() {
+  SettingDBProvider._internal() {
     _store = Store(getObjectBoxModel(),
         directory: '/data/user/0/com.example.social/app_flutter/objectbox');
     _box = _store.box<SettingModel>();

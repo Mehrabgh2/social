@@ -10,27 +10,19 @@ class MainUserListView extends StatelessWidget {
   HomeUserListReposiyory userListRepository = HomeUserListReposiyory();
   final HomeUserListViewPagingController homeUserListViewPagingController =
       Get.put(HomeUserListViewPagingController());
-  bool firstRun = true;
-
-  MainUserListView() {
-    print("object");
-  }
+  late PagingController<int, MainUserRowWidget> controller;
 
   @override
   Widget build(BuildContext context) {
-    if (firstRun) {
-      PagingController<int, MainUserRowWidget> controller =
-          homeUserListViewPagingController.pagingController.value;
-      controller.addPageRequestListener((pageKey) {
-        userListRepository.getHomeUserList(
-            count: 20,
-            page: pageKey,
-            appendPage: appendPage,
-            appendLastPage: appendLastPage);
-      });
-      homeUserListViewPagingController.updatePaging(controller);
-      firstRun = false;
-    }
+    controller = homeUserListViewPagingController.pagingController.value;
+    controller.addPageRequestListener((pageKey) {
+      userListRepository.getHomeUserList(
+          count: 20,
+          page: pageKey,
+          appendPage: appendPage,
+          appendLastPage: appendLastPage);
+    });
+    homeUserListViewPagingController.updatePaging(controller);
     return Obx(() {
       return Expanded(
         child: PagedListView<int, MainUserRowWidget>(
@@ -45,6 +37,12 @@ class MainUserListView extends StatelessWidget {
         ),
       );
     });
+  }
+
+  void unfollow(User user) {
+    MainUserRowWidget unfollowed = controller.itemList!
+        .firstWhere((element) => element.user.email == user.email);
+    unfollowed.unfollow();
   }
 
   void appendPage(List<User> items) {
