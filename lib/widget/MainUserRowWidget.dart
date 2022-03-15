@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/db/FollowedDBProvider.dart';
 import 'package:social/model/User.dart';
 import 'package:social/screen/OtherProfileScreen.dart';
 
 class MainUserRowWidget extends StatelessWidget {
   MainUserRowWidget({required this.user});
+  FollowingController followingController = Get.find<FollowingController>();
 
   User user;
 
@@ -34,12 +36,9 @@ class MainUserRowWidget extends StatelessWidget {
                 FollowedDBProvider.instance.addFollowing(user);
                 user.updateFollowed(true);
               }
+              followingController.updateFollowing();
             });
       }),
     );
-  }
-
-  void unfollow() {
-    user.updateFollowed(false);
   }
 }

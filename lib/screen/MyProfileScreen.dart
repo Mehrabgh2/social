@@ -1,21 +1,22 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/controller/UserProfileController.dart';
 import 'package:social/db/FollowedDBProvider.dart';
+import 'package:social/model/User.dart';
 import 'package:social/screen/FollowerScreen.dart';
 import 'package:social/screen/MyFollowingScreen.dart';
 
 class MyProfileScreen extends StatelessWidget {
   UserProfileController profileController = Get.find<UserProfileController>();
-  FollowingCounter counter = Get.put(FollowingCounter());
-  Function unfollow;
+  FollowingController followController = Get.find<FollowingController>();
+  Function setItemsFollow;
 
-  MyProfileScreen({required this.unfollow});
+  MyProfileScreen({required this.setItemsFollow});
 
   @override
   Widget build(BuildContext context) {
-    counter.updateCount(FollowedDBProvider.instance.getFollowings().length);
     profileController.getMyUser();
     int followerCount = Random().nextInt(200);
     final size = MediaQuery.of(context).size;
@@ -139,9 +140,8 @@ class MyProfileScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(25),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(MyFollowingScreen(
-                          unfollow: unfollow,
-                        ));
+                        Get.to(
+                            MyFollowingScreen(setItemsFollow: setItemsFollow));
                       },
                       child: Column(
                         children: [
@@ -152,7 +152,7 @@ class MyProfileScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            counter.count.toString(),
+                            followController.followings.value.length.toString(),
                             style: TextStyle(
                                 fontSize: size.width / 25,
                                 fontWeight: FontWeight.bold),
@@ -168,13 +168,5 @@ class MyProfileScreen extends StatelessWidget {
         ),
       );
     });
-  }
-}
-
-class FollowingCounter extends GetxController {
-  var count = 0.obs;
-
-  updateCount(int value) {
-    count(value);
   }
 }

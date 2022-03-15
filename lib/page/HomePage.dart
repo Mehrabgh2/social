@@ -8,13 +8,16 @@ class HomePage extends StatelessWidget {
   late List<Widget> navigators;
   int selectedIndex = 0;
   final homePageController = Get.put(HomePageController());
+  late var _homeNavigator;
+  late var _exploreNavigator;
+  late var _myProfileScreen;
 
   HomePage() {
-    var _homeNavigator =
-        HomeScreen(setPage: homePageController.updatePageIndex);
-    var _exploreNavigator = ExploreScreen();
-    var _myProfileScreen =
-        MyProfileScreen(unfollow: _homeNavigator.unfollowupdate);
+    _homeNavigator = HomeScreen(
+        setPage: homePageController.updatePageIndex,
+        mainSetItemsFollow: setItemsFollow);
+    _exploreNavigator = ExploreScreen();
+    _myProfileScreen = MyProfileScreen(setItemsFollow: setItemsFollow);
     navigators = [_homeNavigator, _exploreNavigator, _myProfileScreen];
   }
 
@@ -41,6 +44,10 @@ class HomePage extends StatelessWidget {
         ),
       );
     });
+  }
+
+  void setItemsFollow() {
+    _homeNavigator.setItemsFollow();
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:social/api/Login.dart';
 import 'package:social/binding/UserProfileBinding.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/db/SettingDBProvider.dart';
 import 'package:social/model/ServerMe.dart';
 import 'package:social/model/User.dart';
@@ -14,6 +15,7 @@ Future main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   await Hive.openBox<Map<dynamic, dynamic>>("following");
+  UserProfileBinding().dependencies();
   runApp(MyApp());
 }
 
@@ -25,7 +27,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      initialBinding: UserProfileBinding(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   final _dbProvider = SettingDBProvider();
+  FollowingController followingController = Get.find<FollowingController>();
   late Widget progress;
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:social/db/FollowedDBProvider.dart';
 import 'package:social/model/User.dart';
 import 'package:social/repository/HomeUserListRepository.dart';
 import 'package:social/widget/MainUserRowWidget.dart';
@@ -39,10 +40,16 @@ class MainUserListView extends StatelessWidget {
     });
   }
 
-  void unfollow(User user) {
-    MainUserRowWidget unfollowed = controller.itemList!
-        .firstWhere((element) => element.user.email == user.email);
-    unfollowed.unfollow();
+  void setItemsFollow() {
+    if (controller.itemList != null) {
+      for (var item in controller.itemList!) {
+        if (FollowedDBProvider.instance.containUser(item.user.email)) {
+          item.user.followController.updateFollow(true);
+        } else {
+          item.user.followController.updateFollow(false);
+        }
+      }
+    }
   }
 
   void appendPage(List<User> items) {

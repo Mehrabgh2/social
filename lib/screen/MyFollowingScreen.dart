@@ -6,13 +6,13 @@ import 'package:social/widget/SimpleUserListView.dart';
 
 class MyFollowingScreen extends StatelessWidget {
   late FollowingListView _followingListView;
-  Function unfollow;
+  Function setItemsFollow;
 
-  MyFollowingScreen({required this.unfollow});
+  MyFollowingScreen({required this.setItemsFollow});
 
   @override
   Widget build(BuildContext context) {
-    _followingListView = FollowingListView(unfollow: unfollow);
+    _followingListView = FollowingListView(setItemsFollow: setItemsFollow);
 
     return Scaffold(
       appBar: AppBar(

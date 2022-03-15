@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:social/api/Login.dart';
-import 'package:social/db/FollowedDBProvider.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/db/SettingDBProvider.dart';
 import 'package:social/controller/UserProfileController.dart';
-import 'package:social/model/User.dart';
 import 'package:social/page/LoginPage.dart';
 import 'package:social/widget/FollowingListView.dart';
 import 'package:social/widget/HomeUserListView.dart';
@@ -12,18 +11,23 @@ import 'package:social/widget/HomeUserListView.dart';
 class HomeScreen extends StatelessWidget {
   Function setPage;
   UserProfileController profileController = Get.find<UserProfileController>();
+  FollowingController followingController = Get.find<FollowingController>();
   late MainUserListView _mainUserListView;
   late FollowingListView _followingListView;
   late Widget usersScreen;
   late Widget followingScreen;
+  Function mainSetItemsFollow;
 
-  HomeScreen({required this.setPage});
+  HomeScreen({required this.setPage, required this.mainSetItemsFollow});
 
   @override
   Widget build(BuildContext context) {
+    followingController.updateFollowing();
     final size = MediaQuery.of(context).size;
     _mainUserListView = MainUserListView();
-    _followingListView = FollowingListView(unfollow: unfollowupdate);
+    _followingListView = FollowingListView(
+      setItemsFollow: setItemsFollow,
+    );
     initWidgets(size);
     refreshData();
     return DefaultTabController(
@@ -35,7 +39,7 @@ class HomeScreen extends StatelessWidget {
               tabs: [
                 Tab(text: 'Users'),
                 Tab(
-                  text: 'Fllowings',
+                  text: 'Following',
                 ),
               ],
             ),
@@ -90,6 +94,11 @@ class HomeScreen extends StatelessWidget {
     profileController.mockUser();
     profileController.getMyUser();
     _mainUserListView.refresh();
+  }
+
+  void setItemsFollow() {
+    _mainUserListView.setItemsFollow();
+    mainSetItemsFollow;
   }
 
   void initWidgets(Size size) {
@@ -151,10 +160,5 @@ class HomeScreen extends StatelessWidget {
         child: _followingListView,
       )
     ]);
-  }
-
-  void unfollowupdate(User user) {
-    FollowedDBProvider.instance.removeFollowing(user.email);
-    _mainUserListView.unfollow(user);
   }
 }

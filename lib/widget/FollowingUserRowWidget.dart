@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/db/FollowedDBProvider.dart';
 import 'package:social/model/User.dart';
 import 'package:social/screen/OtherProfileScreen.dart';
 
 class FollowingUserRowWidget extends StatelessWidget {
-  FollowingUserRowWidget({required this.user, required this.remove});
+  FollowingUserRowWidget({required this.user, required this.setItemsFollow});
 
   User user;
-  Function remove;
+  Function setItemsFollow;
+  FollowingController followingController = Get.find<FollowingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,9 @@ class FollowingUserRowWidget extends StatelessWidget {
         subtitle: Text(user.email),
         trailing: ElevatedButton(
           onPressed: () {
-            remove(user);
+            FollowedDBProvider.instance.removeFollowing(user.email);
+            followingController.updateFollowing();
+            setItemsFollow();
           },
           child: const Text("unfollow"),
         ));
