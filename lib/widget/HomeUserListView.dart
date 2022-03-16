@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:social/db/FollowedDBProvider.dart';
 import 'package:social/model/User.dart';
 import 'package:social/repository/HomeUserListRepository.dart';
 import 'package:social/widget/MainUserRowWidget.dart';
@@ -10,27 +11,19 @@ class MainUserListView extends StatelessWidget {
   HomeUserListReposiyory userListRepository = HomeUserListReposiyory();
   final HomeUserListViewPagingController homeUserListViewPagingController =
       Get.put(HomeUserListViewPagingController());
-  bool firstRun = true;
-
-  MainUserListView() {
-    print("object");
-  }
+  late PagingController<int, MainUserRowWidget> controller;
 
   @override
   Widget build(BuildContext context) {
-    if (firstRun) {
-      PagingController<int, MainUserRowWidget> controller =
-          homeUserListViewPagingController.pagingController.value;
-      controller.addPageRequestListener((pageKey) {
-        userListRepository.getHomeUserList(
-            count: 20,
-            page: pageKey,
-            appendPage: appendPage,
-            appendLastPage: appendLastPage);
-      });
-      homeUserListViewPagingController.updatePaging(controller);
-      firstRun = false;
-    }
+    controller = homeUserListViewPagingController.pagingController.value;
+    controller.addPageRequestListener((pageKey) {
+      userListRepository.getHomeUserList(
+          count: 20,
+          page: pageKey,
+          appendPage: appendPage,
+          appendLastPage: appendLastPage);
+    });
+    homeUserListViewPagingController.updatePaging(controller);
     return Obx(() {
       return Expanded(
         child: PagedListView<int, MainUserRowWidget>(
@@ -45,6 +38,18 @@ class MainUserListView extends StatelessWidget {
         ),
       );
     });
+  }
+
+  void setItemsFollow() {
+    if (controller.itemList != null) {
+      for (var item in controller.itemList!) {
+        if (FollowedDBProvider.instance.containUser(item.user.email)) {
+          item.user.followController.updateFollow(true);
+        } else {
+          item.user.followController.updateFollow(false);
+        }
+      }
+    }
   }
 
   void appendPage(List<User> items) {

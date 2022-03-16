@@ -1,18 +1,24 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:social/controller/FollowingController.dart';
 import 'package:social/controller/UserProfileController.dart';
+import 'package:social/db/FollowedDBProvider.dart';
+import 'package:social/model/User.dart';
 import 'package:social/screen/FollowerScreen.dart';
-import 'package:social/screen/FollowingScreen.dart';
+import 'package:social/screen/MyFollowingScreen.dart';
 
 class MyProfileScreen extends StatelessWidget {
   UserProfileController profileController = Get.find<UserProfileController>();
+  FollowingController followController = Get.find<FollowingController>();
+  Function setItemsFollow;
+
+  MyProfileScreen({required this.setItemsFollow});
 
   @override
   Widget build(BuildContext context) {
     profileController.getMyUser();
     int followerCount = Random().nextInt(200);
-    int followingCount = Random().nextInt(200);
     final size = MediaQuery.of(context).size;
     return Obx(() {
       return Scaffold(
@@ -134,7 +140,8 @@ class MyProfileScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(25),
                     child: GestureDetector(
                       onTap: () {
-                        Get.to(FollowingScreen(count: followingCount));
+                        Get.to(
+                            MyFollowingScreen(setItemsFollow: setItemsFollow));
                       },
                       child: Column(
                         children: [
@@ -145,7 +152,7 @@ class MyProfileScreen extends StatelessWidget {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            followingCount.toString(),
+                            followController.followings.value.length.toString(),
                             style: TextStyle(
                                 fontSize: size.width / 25,
                                 fontWeight: FontWeight.bold),

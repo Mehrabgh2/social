@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:social/api/Login.dart';
 import 'package:social/binding/UserProfileBinding.dart';
-import 'package:social/db/DBProvider.dart';
+import 'package:social/controller/FollowingController.dart';
+import 'package:social/db/SettingDBProvider.dart';
 import 'package:social/model/ServerMe.dart';
+import 'package:social/model/User.dart';
 import 'package:social/page/HomePage.dart';
 import 'package:social/page/LoginPage.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(UserAdapter());
+  await Hive.openBox<Map<dynamic, dynamic>>("following");
+  UserProfileBinding().dependencies();
   runApp(MyApp());
 }
 
@@ -19,7 +27,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      initialBinding: UserProfileBinding(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -29,19 +36,17 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  final _dbProvider = DBProvider();
-  bool firstRun = true;
-  final mainController = Get.put(MainController());
+  final _dbProvider = SettingDBProvider();
+  FollowingController followingController = Get.find<FollowingController>();
   late Widget progress;
 
   @override
   Widget build(BuildContext context) {
     initWidget();
-    checkLogin();
+    checkTokenExpire();
     return FutureBuilder<ServerMe>(
       future: getMe(_dbProvider.getSettings().token),
       builder: (context, snapshot) {
-        Widget page = progress;
         if (snapshot.hasData) {
           switch (snapshot.data!.code) {
             case 200:
@@ -52,15 +57,9 @@ class MyHomePage extends StatelessWidget {
               return LoginPage();
           }
         }
-        return page;
+        return progress;
       },
     );
-    // return Obx(() {
-    //   return IndexedStack(
-    //     children: pages,
-    //     index: mainController.pageIndex.value,
-    //   );
-    // });
   }
 
   void initWidget() {
@@ -74,28 +73,17 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  void checkLogin() {
+  void checkTokenExpire() {
     if (checkExpire()) {
       refresh(_dbProvider.getSettings().token).then((value) {
         if (value.code == 200) {
           _dbProvider.updateSetting(
-              DBProvider.TOKEN_SETTING, value.accessToken);
+              SettingDBProvider.TOKEN_SETTING, value.accessToken);
           if (value.tokenExpire != null) {
             int now = (DateTime.now().millisecondsSinceEpoch / 1000).round();
             int expire = value.tokenExpire!;
             _dbProvider.updateTokenExpire(now + expire);
           }
-          mainController.updatePageIndex(2);
-        } else {
-          mainController.updatePageIndex(1);
-        }
-      });
-    } else {
-      getMe(_dbProvider.getSettings().token).then((value) {
-        if (value.code == 200) {
-          mainController.updatePageIndex(2);
-        } else {
-          mainController.updatePageIndex(1);
         }
       });
     }
@@ -112,21 +100,5 @@ class MyHomePage extends StatelessWidget {
     } else {
       return false;
     }
-  }
-
-  void _successLogin() {
-    mainController.updatePageIndex(2);
-  }
-
-  void _successLogout() {
-    mainController.updatePageIndex(1);
-  }
-}
-
-class MainController extends GetxController {
-  var pageIndex = 2.obs;
-
-  updatePageIndex(int index) {
-    pageIndex(index);
   }
 }

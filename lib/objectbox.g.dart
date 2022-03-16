@@ -19,33 +19,33 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(2, 8051495359970159375),
+      id: const IdUid(1, 4382161397665280267),
       name: 'SettingModel',
-      lastPropertyId: const IdUid(5, 344524984015519570),
+      lastPropertyId: const IdUid(5, 6732670868850560715),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1863932885513300954),
+            id: const IdUid(1, 8782366627221459217),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 4582795183219371902),
+            id: const IdUid(2, 2744846879629925123),
             name: 'theme',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 6079010369238324451),
+            id: const IdUid(3, 3999312436428174802),
             name: 'locale',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 5613770626521167000),
+            id: const IdUid(4, 8737891750909243893),
             name: 'token',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 344524984015519570),
+            id: const IdUid(5, 6732670868850560715),
             name: 'tokenExpire',
             type: 6,
             flags: 0)
@@ -74,17 +74,13 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 8051495359970159375),
+      lastEntityId: const IdUid(1, 4382161397665280267),
       lastIndexId: const IdUid(0, 0),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [4586220626221249436],
+      retiredEntityUids: const [],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [
-        7417010942682434840,
-        749593661551011736,
-        2804231332805087704
-      ],
+      retiredPropertyUids: const [],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
