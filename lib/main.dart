@@ -43,23 +43,24 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     initWidget();
-    checkTokenExpire();
-    return FutureBuilder<ServerMe>(
-      future: getMe(_dbProvider.getSettings().token),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          switch (snapshot.data!.code) {
-            case 200:
-              return HomePage();
-            case 401:
-              return LoginPage();
-            default:
-              return LoginPage();
-          }
-        }
-        return progress;
-      },
-    );
+    return HomePage();
+    // checkTokenExpire();
+    // return FutureBuilder<ServerMe>(
+    //   future: getMe(_dbProvider.getSettings().token),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.hasData) {
+    //       switch (snapshot.data!.code) {
+    //         case 200:
+    //           return HomePage();
+    //         case 401:
+    //           return LoginPage();
+    //         default:
+    //           return LoginPage();
+    //       }
+    //     }
+    //     return progress;
+    //   },
+    // );
   }
 
   void initWidget() {
